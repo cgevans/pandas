@@ -3281,6 +3281,11 @@ class TestDataFrame(tm.TestCase, CheckIndexing,
         result = DataFrame([ range(10), range(10) ])
         assert_frame_equal(result, expected)
 
+        iterator = itertools.izip( range(10), itertools.repeat('a') )
+        result = DataFrame(iterator)
+        expected = DataFrame({ 0 : range(10), 1 : 'a' })
+        assert_frame_equal(result, expected, check_dtype=False)
+
     def test_constructor_generator(self):
         #related #2305
 
@@ -3551,10 +3556,6 @@ class TestDataFrame(tm.TestCase, CheckIndexing,
         df = DataFrame([[np.nan, 1], [1, 0]], dtype=np.int64)
         expected = DataFrame([[np.nan, 1], [1, 0]])
         assert_frame_equal(df, expected)
-
-    def test_constructor_iterator_failure(self):
-        with assertRaisesRegexp(TypeError, 'iterator'):
-            df = DataFrame(iter([1, 2, 3]))
 
     def test_constructor_column_duplicates(self):
         # it works! #2079
